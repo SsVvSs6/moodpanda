@@ -4,43 +4,49 @@ import model.User;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import page.EditPostPage;
-import services.LoginService;
+import services.EditPostService;
 
 public class EditPostTest extends BaseTest {
 
     User user;
-    EditPostPage editPostPage;
+    EditPostService editPostService;
     private static final String ADD_POST_RATING = "5";
     private static final String EDIT_POST_RATING = "10";
-    private static final String POST_TEXT = "No reason";
+    private static final String POST_VALID_TEXT = "No reason";
+    private static final String POST_INVALID_TEXT = "No";
 
     @BeforeClass
     public void openEditPostPage() {
         user = new User();
-        editPostPage = new LoginService()
-                .login(user)
-                .clickEditPostButton();
+        editPostService = new EditPostService();
+        editPostService.openPage(user);
     }
 
-    @Test(priority = 1)
+    @Test(priority = 1, description = "Successful adding post")
     public void checkAddPostTest() {
-        editPostPage.fillInPostInput(POST_TEXT)
-                .setUpRating(ADD_POST_RATING)
-                .clickAddButton();
-        Assert.assertTrue(editPostPage.isSuccessAddMessageDisplayed(), "Post is not added");
+        Assert.assertTrue(editPostService.addPost(POST_VALID_TEXT, ADD_POST_RATING)
+                .isSuccessAddMessageDisplayed(),
+                "Post is not added");
     }
 
-    @Test(priority = 2)
+    @Test(priority = 2, description = "Successful editing post rating")
     public void checkEditPostTest() {
-        editPostPage.setUpRating(EDIT_POST_RATING)
-                .clickUpdateButton();
-        Assert.assertTrue(editPostPage.isSuccessEditMessageDisplayed(), "Post is not changed");
+        Assert.assertTrue(editPostService.editRating(EDIT_POST_RATING)
+                .isSuccessEditMessageDisplayed(),
+                "Post is not changed");
     }
 
-    @Test(priority = 3)
+    @Test(priority = 3, description = "Successful deleting post")
     public void checkDeletePostTest() {
-        editPostPage.clickDeleteButton();
-        Assert.assertTrue(editPostPage.isSuccessDeleteMessageDisplayed(), "Post is not deleted");
+        Assert.assertTrue(editPostService.deletePost()
+                .isSuccessDeleteMessageDisplayed(),
+                "Post is not deleted");
+    }
+
+    @Test(priority = 4, description = "Error if post text is short")
+    public void checkPostTextIsInvalidTest() {
+        Assert.assertTrue(editPostService.addPost(POST_INVALID_TEXT, ADD_POST_RATING).
+                isUnsuccessfulAddMessageDisplayed(),
+                "Post is created");
     }
 }

@@ -13,18 +13,20 @@ import static com.codeborne.selenide.Selenide.$$;
 public class EditPostPage {
 
     private static final String BUTTON_XPATH = "//table//button[contains(text(), '%s')]";
-    private static final String SUCCESS_MESSAGE_XPATH = "//*[contains(text(), '%s')]";
+    private static final String MESSAGE_XPATH = "//*[contains(text(), '%s')]";
     private static final List<SelenideElement> RATING_SELECT = $$(By.xpath("//td//select"));
     private static final List<SelenideElement> POST_INPUT = $$(By.xpath("//td[@class='wrap']/textarea"));
     private static final List<SelenideElement> UPDATE_BUTTON = $$(By.xpath(String.format(BUTTON_XPATH, "Update")));
     private static final List<SelenideElement> DELETE_BUTTON = $$(By.xpath(String.format(BUTTON_XPATH, "Delete")));
     private static final List<SelenideElement> ADD_BUTTON = $$(By.xpath(String.format(BUTTON_XPATH, "Add")));
     private static final SelenideElement SUCCESS_EDIT_MESSAGE
-            = $(By.xpath(String.format(SUCCESS_MESSAGE_XPATH, "Post updated")));
+            = $(By.xpath(String.format(MESSAGE_XPATH, "Post updated")));
     private static final SelenideElement SUCCESS_ADD_MESSAGE
-            = $(By.xpath(String.format(SUCCESS_MESSAGE_XPATH, "Posted")));
+            = $(By.xpath(String.format(MESSAGE_XPATH, "Posted")));
     private static final SelenideElement SUCCESS_DELETE_MESSAGE
-            = $(By.xpath(String.format(SUCCESS_MESSAGE_XPATH, "Post deleted")));
+            = $(By.xpath(String.format(MESSAGE_XPATH, "Post deleted")));
+    private static final SelenideElement UNSUCCESSFUL_ADD_MESSAGE
+            = $(By.xpath(String.format(MESSAGE_XPATH, "Post failed:The Reason must be at least 5 letters long.")));
     private static final int POSITION = 0;
 
     public EditPostPage setUpRating(String rating) {
@@ -63,4 +65,10 @@ public class EditPostPage {
     public boolean isSuccessDeleteMessageDisplayed() {
         return SUCCESS_DELETE_MESSAGE.shouldBe(Condition.visible, Duration.ofSeconds(10)).isDisplayed();
     }
+
+    public boolean isUnsuccessfulAddMessageDisplayed() {
+        return UNSUCCESSFUL_ADD_MESSAGE.shouldBe(Condition.visible, Duration.ofSeconds(10)).isDisplayed();
+    }
+
+
 }
